@@ -5,7 +5,7 @@ using System;
 
 namespace TinyHttpClientPoolLib
 {
-    public class TinyHttpClientPool
+    public class TinyHttpClientPool : ITinyHttpClientPool
     {
         private static TinyHttpClientPool _instance;
 
