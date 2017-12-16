@@ -8,7 +8,6 @@ namespace TinyHttpClientPoolLib
     public class TinyHttpClientPool : ITinyHttpClientPool
     {
         private static TinyHttpClientPool _instance;
-
         private List<TinyHttpClient> _pool;
 
         public int AvailableCount => _pool.Where(x => x.State == State.Available).Count(); 
@@ -26,7 +25,7 @@ namespace TinyHttpClientPoolLib
 
         public static HttpClient FetchClient()
         {
-            if(_instance == null)
+            if (_instance == null)
             {
                 throw new Exception("You must call TinyHttpClientPool.Initialize if you plan to use the static methods");
             }
@@ -36,32 +35,38 @@ namespace TinyHttpClientPoolLib
 
         public HttpClient Fetch()
         {
-            var client = _pool.FirstOrDefault(x => x.State == State.Available);
-                              
-            if (client == null)
+            lock(_pool)
             {
-                // No available clients, create a new one
-                client = new TinyHttpClient();
-                client.State = State.InUse;
-                client.OnDispose += (sender, e) => client.State = State.Available;
-                _pool.Add(client);
-            }
+                var client = _pool.FirstOrDefault(x => x.State == State.Available);
+                                  
+                if (client == null)
+                {
+                    // No available clients, create a new one
+                    client = new TinyHttpClient();
+                    client.State = State.InUse;
+                    client.OnDispose += (sender, e) => client.State = State.Available;
+                    _pool.Add(client);
+                }
 
-            return client;
+                return client;
+			}
         }
 
         public void Flush()
         {
-            var clientsToRemove = new List<HttpClient>();
-            foreach (var client in _pool.Where(x => x.State == State.Available).ToList())
+            lock (_pool)
             {
-				client.State = State.Disposed;
-    
-                // Cast to make sure we call the base dispose
-                var baseClient = client as HttpClient;
-                baseClient.Dispose();
+                var clientsToRemove = new List<HttpClient>();
+                foreach (var client in _pool.Where(x => x.State == State.Available).ToList())
+                {
+                    client.State = State.Disposed;
 
-                _pool.Remove(client);
+                    // Cast to make sure we call the base dispose
+                    var baseClient = client as HttpClient;
+                    baseClient.Dispose();
+
+                    _pool.Remove(client);
+                }
             }
         }
 

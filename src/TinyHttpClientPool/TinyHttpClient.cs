@@ -27,11 +27,4 @@ namespace TinyHttpClientPoolLib
             OnDispose?.Invoke(this, new EventArgs());
         }
     }
-
-    public enum State
-    {
-        Available,
-        InUse,
-        Disposed
-    }
 }
