@@ -35,7 +35,6 @@ namespace TinyHttpClientPoolLib
         {
             var client = _pool.FirstOrDefault(x => x.InUse == false);
                               
-
             if (client == null)
             {
                 // No available clients, create a new one
@@ -43,10 +42,9 @@ namespace TinyHttpClientPoolLib
                 client.InUse = true;
                 client.OnDispose += (sender, e) => client.InUse = false;
                 _pool.Add(client);
-                return client;
             }
 
-            return _pool.FirstOrDefault();
+            return client;
         }
 
         public static void Initialize()
