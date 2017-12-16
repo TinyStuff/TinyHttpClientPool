@@ -40,7 +40,7 @@ using (HttpClient client = pool.Fetch())
 {
     // As long as you are in the using, the instance
     // is yours and yours alone
-    var result = client.GetStringAsync(url);
+    var result = await client.GetStringAsync(url);
 }
 
 // At this point it is returned to the pool
