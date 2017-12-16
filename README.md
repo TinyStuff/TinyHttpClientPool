@@ -25,6 +25,7 @@ var pool = new TinyHttpClientPool();
 
 // B) Use the static helpers
 TinyHttpClientPool.Initialize();
+var client = TinyHttpClientPool.FetchClient();
 
 // C) Register the interface into your favorite IoC container
 var pool = Resolver.Resolve<ITinyHttpClientPool>();
@@ -45,3 +46,25 @@ using (HttpClient client = pool.Fetch())
 
 // At this point it is returned to the pool
 ```
+
+## Important
+
+For this to work, you must dispose the client when you are done with it. There is no other way to return it to the pool. Well, there is one way...
+
+The returned client isn't really an ```HttpClient```, but rather a ```TinyHttpClient``` that inherits from ```HttpClient```.
+
+So you could manually set the state to ```State.Available``` but that is at your own risk.
+
+```csharp
+var client = pool.Fetch() as TinyHttpClient;
+
+// do stuff with client here
+
+// Mark it as ready for the pool to reuse
+client.State = State.Available; 
+```
+
+
+## Roadmap
+
+There isn't really any roadmap to this since it's pretty much done the way it's supposed to work. But if you're missing a feature, create an issue or better yet, create a PR. :)
