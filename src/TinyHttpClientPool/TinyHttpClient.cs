@@ -50,5 +50,10 @@ namespace TinyHttpClientPoolLib
         {
             OnDispose?.Invoke(this, new EventArgs());
         }
+
+        internal void InternalDispose()
+        {
+            base.Dispose(true);
+        }
     }
 }

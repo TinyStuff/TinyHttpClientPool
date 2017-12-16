@@ -84,11 +84,7 @@ namespace TinyHttpClientPoolLib
                 foreach (var client in _pool.Where(x => x.State == State.Available).ToList())
                 {
                     client.State = State.Disposed;
-
-                    // Cast to make sure we call the base dispose
-                    var baseClient = client as HttpClient;
-                    baseClient.Dispose();
-
+                    client.InternalDispose();
                     _pool.Remove(client);
                 }
             }
