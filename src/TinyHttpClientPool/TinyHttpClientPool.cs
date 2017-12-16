@@ -49,7 +49,7 @@ namespace TinyHttpClientPoolLib
                 }
 
                 return client;
-			}
+            }
         }
 
         public void Flush()
