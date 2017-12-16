@@ -37,6 +37,7 @@ The usage from this point on is pretty straight forward
 // Create an instance in any way above
 var pool = new TinyHttpClientPool();
 
+// Always use a using around the client!
 using (HttpClient client = pool.Fetch())
 {
     // As long as you are in the using, the instance
