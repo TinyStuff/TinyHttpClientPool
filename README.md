@@ -48,6 +48,16 @@ using (HttpClient client = pool.Fetch())
 // At this point it is returned to the pool
 ```
 
+## Cleanup
+
+If you want to flush the pool, simply call ```Flush()```
+
+```csharp
+pool.Flush();
+```
+
+This will dispose any ```HttpClient``` that is in the ```Available``` state but not touch those who are in the ```InUse``` state.
+
 ## Important
 
 For this to work, you must dispose the client when you are done with it. There is no other way to return it to the pool. Well, there is one way...
