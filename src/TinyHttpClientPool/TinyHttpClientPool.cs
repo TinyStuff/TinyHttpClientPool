@@ -35,7 +35,7 @@ namespace TinyHttpClientPoolLib
 
         public HttpClient Fetch()
         {
-            lock(_pool)
+            lock (_pool)
             {
                 var client = _pool.FirstOrDefault(x => x.State == State.Available);
                                   
