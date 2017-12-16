@@ -4,7 +4,6 @@ using Xunit;
 
 namespace TinyHttpClient.Tests
 {
-  
     public class TinyHttpClientTest
     {
         [Fact]
@@ -47,6 +46,31 @@ namespace TinyHttpClient.Tests
 
             // Assert
             Assert.Same(a, b);
+        }
+
+        [Fact]
+        public void FlushTest()
+        {
+            // Arrange
+            var pool = new TinyHttpClientPool();
+
+            // Act
+            var a = pool.Fetch();
+            var b = pool.Fetch();
+
+            // Assert and dispose
+            Assert.Equal(0, pool.AvailableCount);
+            Assert.Equal(2, pool.TotalPoolSize);
+
+            a.Dispose();
+
+            Assert.Equal(1, pool.AvailableCount);
+            Assert.Equal(2, pool.TotalPoolSize);
+
+            pool.Flush(); // Only removes unused
+
+            Assert.Equal(0, pool.AvailableCount);
+            Assert.Equal(1, pool.TotalPoolSize); // There should be one left since it's still in use
         }
     }
 }

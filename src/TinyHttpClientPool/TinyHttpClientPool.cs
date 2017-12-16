@@ -9,7 +9,10 @@ namespace TinyHttpClientPoolLib
     {
         private static TinyHttpClientPool _instance;
 
-        public List<TinyHttpClient> _pool;
+        private List<TinyHttpClient> _pool;
+
+        public int AvailableCount => _pool.Where(x => x.State == State.Available).Count(); 
+        public int TotalPoolSize => _pool.Where(x => x.State != State.Disposed).Count(); 
 
         public TinyHttpClientPool()
         {
@@ -33,18 +36,33 @@ namespace TinyHttpClientPoolLib
 
         public HttpClient Fetch()
         {
-            var client = _pool.FirstOrDefault(x => x.InUse == false);
+            var client = _pool.FirstOrDefault(x => x.State == State.Available);
                               
             if (client == null)
             {
                 // No available clients, create a new one
                 client = new TinyHttpClient();
-                client.InUse = true;
-                client.OnDispose += (sender, e) => client.InUse = false;
+                client.State = State.InUse;
+                client.OnDispose += (sender, e) => client.State = State.Available;
                 _pool.Add(client);
             }
 
             return client;
+        }
+
+        public void Flush()
+        {
+            var clientsToRemove = new List<HttpClient>();
+            foreach (var client in _pool.Where(x => x.State == State.Available).ToList())
+            {
+				client.State = State.Disposed;
+    
+                // Cast to make sure we call the base dispose
+                var baseClient = client as HttpClient;
+                baseClient.Dispose();
+
+                _pool.Remove(client);
+            }
         }
 
         public static void Initialize()
