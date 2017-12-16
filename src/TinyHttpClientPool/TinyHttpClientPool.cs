@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Linq;
+using System;
 
 namespace TinyHttpClientPoolLib
 {
@@ -19,6 +19,16 @@ namespace TinyHttpClientPoolLib
         private void Internal_Initialize()
         {
             _pool = new List<TinyHttpClient>();
+        }
+
+        public static HttpClient FetchClient()
+        {
+            if(_instance == null)
+            {
+                throw new Exception("You must call TinyHttpClientPool.Initialize if you plan to use the static methods");
+            }
+
+            return _instance.Fetch();
         }
 
         public HttpClient Fetch()
@@ -42,17 +52,6 @@ namespace TinyHttpClientPoolLib
         public static void Initialize()
         {
             _instance = new TinyHttpClientPool();
-        }
-    }
-
-    public class TinyHttpClient : HttpClient
-    {
-        public bool InUse { get; set; }
-        public EventHandler OnDispose;
-
-        protected override void Dispose(bool disposing)
-        {
-            OnDispose?.Invoke(this, new EventArgs());
         }
     }
 }
