@@ -6,8 +6,8 @@ It is Tiny and only a few classes big.
 ## Why use it?
 
 * Exclusive access to an HttpClient while calling
-* Allows for custom headers
-* Reuse of already instansiated HttpClients
+* Allows for custom headers per request while reusing HttpClients
+* Pools are cool
 
 ## Why is it created
 
