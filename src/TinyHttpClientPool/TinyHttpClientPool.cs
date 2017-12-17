@@ -34,7 +34,7 @@ namespace TinyHttpClientPoolLib
         private static TinyHttpClientPool _instance;
         private readonly List<TinyHttpClient> _pool;
 
-		public static TinyHttpClientPool Current => _instance;
+        public static TinyHttpClientPool Current => _instance;
 
         public int AvailableCount => _pool.Where(x => x.State == State.Available).Count(); 
         public int TotalPoolSize => _pool.Where(x => x.State != State.Disposed).Count(); 
@@ -59,7 +59,7 @@ namespace TinyHttpClientPoolLib
 
         public TinyHttpClientPool()
         {
-			_pool = new List<TinyHttpClient>();
+            _pool = new List<TinyHttpClient>();
         }
 
         public static HttpClient FetchClient()
@@ -122,7 +122,7 @@ namespace TinyHttpClientPoolLib
         {
             if (_instance == null)
             {
-				_instance = new TinyHttpClientPool();
+                _instance = new TinyHttpClientPool();
             }
         }
     }
