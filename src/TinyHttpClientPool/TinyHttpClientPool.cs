@@ -34,8 +34,28 @@ namespace TinyHttpClientPoolLib
         private static TinyHttpClientPool _instance;
         private readonly List<TinyHttpClient> _pool;
 
+		public static TinyHttpClientPool Current => _instance;
+
         public int AvailableCount => _pool.Where(x => x.State == State.Available).Count(); 
         public int TotalPoolSize => _pool.Where(x => x.State != State.Disposed).Count(); 
+
+
+        /// <summary>
+        /// This Action will be called every time a new instance of 
+        /// an HttpClient is created for the pool.
+        /// </summary>
+        /// <remarks>
+        /// A good place to set base urls, common headers and so on
+        /// </remarks>
+        public Action<HttpClient> ClientInitialization;
+
+        /// <summary>
+        /// Occurs when pool changed. Mostly used for statistics and monitoring.
+        /// </summary>
+        /// <remarks>
+        /// Raised when a HttpClient is created, fetched or disposed.
+        /// </remarks>
+        public event EventHandler PoolChanged;
 
         public TinyHttpClientPool()
         {
@@ -62,10 +82,22 @@ namespace TinyHttpClientPoolLib
                 {
                     // No available clients, create a new one
                     client = new TinyHttpClient();
-                    client.State = State.InUse;
-                    client.OnDispose += (sender, e) => client.State = State.Available;
+
+                    // Allow for user injected initialization of the client
+                    ClientInitialization?.Invoke(client);
+
+                    // Hook up events
+                    client.OnDispose += (sender, e) =>
+                    {
+                        client.State = State.Available;
+                        PoolChanged?.Invoke(this, new EventArgs());
+                    };
+                        
                     _pool.Add(client);
                 }
+
+                client.State = State.InUse;
+				PoolChanged?.Invoke(this, new EventArgs());
 
                 return client;
             }
@@ -81,6 +113,8 @@ namespace TinyHttpClientPoolLib
                     client.InternalDispose();
                     _pool.Remove(client);
                 }
+
+                PoolChanged?.Invoke(this, new EventArgs());
             }
         }
 
