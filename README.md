@@ -48,6 +48,28 @@ using (HttpClient client = pool.Fetch())
 // At this point it is returned to the pool
 ```
 
+## Initialization
+> Note: We are currently working on a better way to initialize the pool. But for the time being, you can hook up to the ```ClientInitialization``` action and configure each new ```HttpClient``` with default values.
+>
+> What we are thinking of is a configuration object passed into the constructor of the Initialize call and/or the constructor of the TinyHttpClientPool class.
+
+For example, setting a common base url on each new ```HttpClient```is done like this:
+```csharp
+ TinyHttpClientPool.Current.ClientInitialization = (obj) => obj.BaseAddress = new Uri(BackendUrl);
+```
+
+## Monitoring
+
+You can monitor the pool size and number of available ```HttpClients``` and hook up to the ```PoolChanged``` event to be notified if something changes.
+
+```csharp
+TinyHttpClientPool.Current.PoolChanged += (sender, e) =>
+{
+    PoolSize = TinyHttpClientPool.Current.TotalPoolSize;
+    Available = TinyHttpClientPool.Current.AvailableCount;
+}
+```
+
 ## Cleanup
 
 If you want to flush the pool, simply call ```Flush()```
