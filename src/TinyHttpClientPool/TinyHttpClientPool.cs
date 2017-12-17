@@ -133,11 +133,11 @@ namespace TinyHttpClientPoolLib
             }
         }
 
-        public static void Initialize()
+        public static void Initialize(TinyHttpClientPoolConfiguration configuration = null)
         {
             if (_instance == null)
             {
-                _instance = new TinyHttpClientPool();
+                _instance = new TinyHttpClientPool(configuration);
             }
         }
     }
