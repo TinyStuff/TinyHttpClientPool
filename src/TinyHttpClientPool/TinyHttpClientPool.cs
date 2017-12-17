@@ -98,11 +98,17 @@ namespace TinyHttpClientPoolLib
                         {
                             client.DefaultRequestHeaders.Clear();
                         }
-
+ 
                         PoolChanged?.Invoke(this, new EventArgs());
                     };
                         
                     _pool.Add(client);
+                }
+
+                // Check if there is any configuration we need
+                if (!String.IsNullOrWhiteSpace(Configuration.BaseUrl))
+                {
+                    client.BaseAddress = new Uri(Configuration.BaseUrl);
                 }
 
                 client.State = State.InUse;

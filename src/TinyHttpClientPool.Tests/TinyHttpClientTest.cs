@@ -117,5 +117,22 @@ namespace TinyHttpClient.Tests
             Assert.Same(a, b);
             Assert.Equal(1, b.DefaultRequestHeaders.Count());
         }
+
+        [Fact]
+        public void BaseUrlThroughConfigurationTest()
+        {
+            // Arrange
+            var pool = new TinyHttpClientPool(
+                new TinyHttpClientPoolConfiguration()
+                {
+                    BaseUrl = "https://www.ducksareawesome.net"
+                });
+
+            // Act
+            var a = pool.Fetch();
+
+            // Assert
+            Assert.Equal("https://www.ducksareawesome.net/", a.BaseAddress.ToString());
+        }
     }
 }
