@@ -37,8 +37,9 @@ namespace TinyHttpClientPoolLib
         public static TinyHttpClientPool Current => _instance;
 
         public int AvailableCount => _pool.Where(x => x.State == State.Available).Count(); 
-        public int TotalPoolSize => _pool.Where(x => x.State != State.Disposed).Count(); 
+        public int TotalPoolSize => _pool.Where(x => x.State != State.Disposed).Count();
 
+        public TinyHttpClientPoolConfiguration Configuration { get; set; }
 
         /// <summary>
         /// This Action will be called every time a new instance of 
@@ -57,9 +58,11 @@ namespace TinyHttpClientPoolLib
         /// </remarks>
         public event EventHandler PoolChanged;
 
-        public TinyHttpClientPool()
+        public TinyHttpClientPool(TinyHttpClientPoolConfiguration configuration = null)
         {
             _pool = new List<TinyHttpClient>();
+
+            Configuration = configuration ?? new TinyHttpClientPoolConfiguration();
         }
 
         public static HttpClient FetchClient()
@@ -90,10 +93,22 @@ namespace TinyHttpClientPoolLib
                     client.OnDispose += (sender, e) =>
                     {
                         client.State = State.Available;
+
+                        if (Configuration.ResetHeadersOnReuse)
+                        {
+                            client.DefaultRequestHeaders.Clear();
+                        }
+ 
                         PoolChanged?.Invoke(this, new EventArgs());
                     };
                         
                     _pool.Add(client);
+                }
+
+                // Check if there is any configuration we need
+                if (!String.IsNullOrWhiteSpace(Configuration.BaseUrl))
+                {
+                    client.BaseAddress = new Uri(Configuration.BaseUrl);
                 }
 
                 client.State = State.InUse;
@@ -118,11 +133,11 @@ namespace TinyHttpClientPoolLib
             }
         }
 
-        public static void Initialize()
+        public static void Initialize(TinyHttpClientPoolConfiguration configuration = null)
         {
             if (_instance == null)
             {
-                _instance = new TinyHttpClientPool();
+                _instance = new TinyHttpClientPool(configuration);
             }
         }
     }

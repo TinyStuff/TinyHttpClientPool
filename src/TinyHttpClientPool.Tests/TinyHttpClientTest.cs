@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using TinyHttpClientPoolLib;
 using Xunit;
 
@@ -71,6 +72,67 @@ namespace TinyHttpClient.Tests
 
             Assert.Equal(0, pool.AvailableCount);
             Assert.Equal(1, pool.TotalPoolSize); // There should be one left since it's still in use
+        }
+
+        [Fact]
+        public void ResetHeadersOnReuseTest()
+        {
+            // Arrange
+            var pool = new TinyHttpClientPool(
+                new TinyHttpClientPoolConfiguration()
+                {
+                    ResetHeadersOnReuse = true
+                });
+
+            // Act
+            var a = pool.Fetch();
+			a.DefaultRequestHeaders.Add("Ducks", "are awesome");
+            a.Dispose();
+
+            var b = pool.Fetch();
+
+            // Assert
+            Assert.Same(a, b);
+            Assert.Equal(0, b.DefaultRequestHeaders.Count());
+        }
+
+        [Fact]
+        public void ReuseHeadersOnReuseTest()
+        {
+            // Arrange
+            var pool = new TinyHttpClientPool(
+                new TinyHttpClientPoolConfiguration()
+                {
+                    ResetHeadersOnReuse = false
+                });
+
+            // Act
+            var a = pool.Fetch();
+            a.DefaultRequestHeaders.Add("Ducks", "are awesome");
+            a.Dispose();
+
+            var b = pool.Fetch();
+
+            // Assert
+            Assert.Same(a, b);
+            Assert.Equal(1, b.DefaultRequestHeaders.Count());
+        }
+
+        [Fact]
+        public void BaseUrlThroughConfigurationTest()
+        {
+            // Arrange
+            var pool = new TinyHttpClientPool(
+                new TinyHttpClientPoolConfiguration()
+                {
+                    BaseUrl = "https://www.ducksareawesome.net"
+                });
+
+            // Act
+            var a = pool.Fetch();
+
+            // Assert
+            Assert.Equal("https://www.ducksareawesome.net/", a.BaseAddress.ToString());
         }
     }
 }
