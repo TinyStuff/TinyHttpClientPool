@@ -3,9 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
     <RootNamespace>TinyHttpClientPoolLib</RootNamespace>
+    <PackageIconUrl>https://i.imgur.com/uQER5cV.png</PackageIconUrl>
+
+    <Authors>johankson</Authors>
+    <Description>A very simple HttpClient Pool implementation for .net/xamarin.</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>First version</PackageReleaseNotes>
+    <Copyright>Copyright 2017 - Johan Karlsson</Copyright>
+    <PackageTags>Xamarin httpclient pool</PackageTags>
+    <PackageIconUrl>https://i.imgur.com/uQER5cV.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/johankson/TinyHttpClientPool</PackageProjectUrl>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Class1.cs" />
-  </ItemGroup>
 </Project>
