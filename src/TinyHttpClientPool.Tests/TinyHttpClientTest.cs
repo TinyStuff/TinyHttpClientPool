@@ -134,5 +134,41 @@ namespace TinyHttpClient.Tests
             // Assert
             Assert.Equal("https://www.ducksareawesome.net/", a.BaseAddress.ToString());
         }
+
+        [Fact]
+        public void InitializeClientTest()
+        {
+            // Arrange
+            var i = 0;
+            var pool = new TinyHttpClientPool();
+            pool.ClientInitializationOnCreation = (obj) => i++;
+
+            // Act
+            var a = pool.Fetch();
+            a.Dispose();
+            var b = pool.Fetch();
+            b.Dispose();
+
+            // Assert
+            Assert.Equal(1, i);
+        }
+
+        [Fact]
+        public void InitializeClientOnFetchTest()
+        {
+            // Arrange
+            var i = 0;
+            var pool = new TinyHttpClientPool();
+            pool.ClientInitializationOnFetch = (obj) => i++;
+
+            // Act
+            var a = pool.Fetch();
+            a.Dispose();
+            var b = pool.Fetch();
+            b.Dispose();
+
+            // Assert
+            Assert.Equal(2, i);
+        }
     }
 }

@@ -55,7 +55,12 @@ using (HttpClient client = pool.Fetch())
 
 For example, setting a common base url on each new ```HttpClient```is done like this:
 ```csharp
- TinyHttpClientPool.Current.ClientInitialization = (obj) => obj.BaseAddress = new Uri(BackendUrl);
+ TinyHttpClientPool.Current.ClientInitializationOnCreation = (obj) => obj.BaseAddress = new Uri(BackendUrl);
+```
+
+You can also run common code on each fetch.
+```csharp
+TinyHttpClientPool.Current.ClientInitializationOnFetch = (obj) => ChangeHeaders(obj);
 ```
 
 ## Monitoring

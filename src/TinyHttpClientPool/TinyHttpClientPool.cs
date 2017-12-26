@@ -43,12 +43,23 @@ namespace TinyHttpClientPoolLib
 
         /// <summary>
         /// This Action will be called every time a new instance of 
-        /// an HttpClient is created for the pool.
+        /// an HttpClient is created for the pool but only ONCE for a 
+        /// specific instance of a client.
         /// </summary>
         /// <remarks>
         /// A good place to set base urls, common headers and so on
         /// </remarks>
-        public Action<HttpClient> ClientInitialization;
+        public Action<HttpClient> ClientInitializationOnCreation;
+
+        /// <summary>
+        /// This action will be called every time a client is reused, including
+        /// right after a client is created.
+        /// </summary>
+        /// <remarks>
+        /// A good place to add stuff that needs to be added right before
+        /// a client is returned for usage. It's called last in the chain.
+        /// </remarks>
+        public Action<HttpClient> ClientInitializationOnFetch;
 
         /// <summary>
         /// Occurs when pool changed. Mostly used for statistics and monitoring.
@@ -87,7 +98,7 @@ namespace TinyHttpClientPoolLib
                     client = new TinyHttpClient();
 
                     // Allow for user injected initialization of the client
-                    ClientInitialization?.Invoke(client);
+                    ClientInitializationOnCreation?.Invoke(client);
 
                     // Hook up events
                     client.OnDispose += (sender, e) =>
@@ -110,6 +121,8 @@ namespace TinyHttpClientPoolLib
                 {
                     client.BaseAddress = new Uri(Configuration.BaseUrl);
                 }
+
+                ClientInitializationOnFetch?.Invoke(client);
 
                 client.State = State.InUse;
 				PoolChanged?.Invoke(this, new EventArgs());

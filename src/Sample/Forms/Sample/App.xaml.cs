@@ -21,7 +21,7 @@ namespace Sample
             // You can supply an action on what to do to initialize any new HttpClient
             // DO NOT keep a reference to the passed HttpClient since it must be controlled
             // by the pool.
-            TinyHttpClientPool.Current.ClientInitialization = (obj) => obj.BaseAddress = new Uri(BackendUrl);
+            TinyHttpClientPool.Current.ClientInitializationOnCreation = (obj) => obj.BaseAddress = new Uri(BackendUrl);
 
             DependencyService.Register<TodoService>();
 
