@@ -29,6 +29,16 @@ namespace TinyHttpClientPoolLib
 {
     public class TinyHttpClient : HttpClient
     {
+        public TinyHttpClient() : base()
+        {
+
+        }
+
+        public TinyHttpClient(HttpMessageHandler messageHandler) : base(messageHandler)
+        {
+
+        }
+
         public State State { get; set; }
 
         /// <summary>
