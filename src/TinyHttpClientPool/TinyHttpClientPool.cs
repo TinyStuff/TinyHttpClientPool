@@ -94,8 +94,11 @@ namespace TinyHttpClientPoolLib
                                   
                 if (client == null)
                 {
-                    // No available clients, create a new one
-                    client = new TinyHttpClient();
+                    // No available clients, create a new one, use message handler if specified in configuration
+                    if (Configuration.MessageHandler != null)
+                        client = new TinyHttpClient(Configuration.MessageHandler);
+                    else 
+                        client = new TinyHttpClient();
 
                     // Allow for user injected initialization of the client
                     ClientInitializationOnCreation?.Invoke(client);

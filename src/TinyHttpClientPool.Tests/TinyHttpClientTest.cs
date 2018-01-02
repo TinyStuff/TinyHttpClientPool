@@ -26,6 +26,7 @@ namespace TinyHttpClient.Tests
             // Arrange
             var pool = new TinyHttpClientPool();
 
+
             // Act
             var a = pool.Fetch();
             var b = pool.Fetch();
@@ -86,7 +87,7 @@ namespace TinyHttpClient.Tests
 
             // Act
             var a = pool.Fetch();
-			a.DefaultRequestHeaders.Add("Ducks", "are awesome");
+            a.DefaultRequestHeaders.Add("Ducks", "are awesome");
             a.Dispose();
 
             var b = pool.Fetch();
@@ -133,6 +134,25 @@ namespace TinyHttpClient.Tests
 
             // Assert
             Assert.Equal("https://www.ducksareawesome.net/", a.BaseAddress.ToString());
+        }
+
+        [Fact]
+        public async System.Threading.Tasks.Task MessageHandlerThroughConfigurationTest()
+        {
+            // Arrange
+            var pool = new TinyHttpClientPool(
+                new TinyHttpClientPoolConfiguration()
+                {
+                    BaseUrl = "https://www.ducksareawesome.net",
+                    MessageHandler = new TinyHttpClientPool.Tests.DummyMessageHandler()
+                });
+
+            // Act
+            var a = pool.Fetch();
+            var result = await a.GetAsync("http://test.nu/fake");
+
+            // Assert
+            Assert.Equal(result.StatusCode, System.Net.HttpStatusCode.SeeOther);
         }
 
         [Fact]
