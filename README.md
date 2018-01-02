@@ -3,6 +3,10 @@ A HttpClient Pool that allows for reuse of http clients by assuring that you hav
 
 It is Tiny and only a few classes big.
 
+## Build status
+
+![Build status](https://io2gamelabs.visualstudio.com/_apis/public/build/definitions/be16d002-5786-41a1-bf3b-3e13d5e80aa0/13/badge)
+
 ## Why use it?
 
 * Exclusive access to an HttpClient while calling
