@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace TinyHttpClientPool.Tests
+namespace TinyHttpClientPoolLib.Tests
 {
     public class DummyMessageHandler : DelegatingHandler
     {

@@ -11,7 +11,7 @@ namespace TinyHttpClient.Tests
         public void InitializationTest()
         {
             // Arrange
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool();
+            var pool = new TinyHttpClientPool();
 
             // Act
             var a = pool.Fetch();
@@ -24,7 +24,7 @@ namespace TinyHttpClient.Tests
         public void NewInstanceTest()
         {
             // Arrange
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool();
+            var pool = new TinyHttpClientPool();
 
 
             // Act
@@ -39,7 +39,7 @@ namespace TinyHttpClient.Tests
         public void ReuseTest()
         {
             // Arrange
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool();
+            var pool = new TinyHttpClientPool();
 
             // Act
             var a = pool.Fetch();
@@ -54,7 +54,7 @@ namespace TinyHttpClient.Tests
         public void FlushTest()
         {
             // Arrange
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool();
+            var pool = new TinyHttpClientPool();
 
             // Act
             var a = pool.Fetch();
@@ -79,7 +79,7 @@ namespace TinyHttpClient.Tests
         public void ResetHeadersOnReuseTest()
         {
             // Arrange
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool(
+            var pool = new TinyHttpClientPool(
                 new TinyHttpClientPoolConfiguration()
                 {
                     ResetHeadersOnReuse = true
@@ -101,7 +101,7 @@ namespace TinyHttpClient.Tests
         public void ReuseHeadersOnReuseTest()
         {
             // Arrange
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool(
+            var pool = new TinyHttpClientPool(
                 new TinyHttpClientPoolConfiguration()
                 {
                     ResetHeadersOnReuse = false
@@ -123,7 +123,7 @@ namespace TinyHttpClient.Tests
         public void BaseUrlThroughConfigurationTest()
         {
             // Arrange
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool(
+            var pool = new TinyHttpClientPool(
                 new TinyHttpClientPoolConfiguration()
                 {
                     BaseUrl = "https://www.ducksareawesome.net"
@@ -140,7 +140,7 @@ namespace TinyHttpClient.Tests
         public async System.Threading.Tasks.Task MessageHandlerThroughConfigurationTest()
         {
             // Arrange
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool(
+            var pool = new TinyHttpClientPool(
                 new TinyHttpClientPoolConfiguration()
                 {
                     BaseUrl = "https://www.ducksareawesome.net",
@@ -160,7 +160,7 @@ namespace TinyHttpClient.Tests
         {
             // Arrange
             var i = 0;
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool();
+            var pool = new TinyHttpClientPool();
             pool.ClientInitializationOnCreation = (obj) => i++;
 
             // Act
@@ -178,7 +178,7 @@ namespace TinyHttpClient.Tests
         {
             // Arrange
             var i = 0;
-            var pool = new TinyHttpClientPoolLib.TinyHttpClientPool();
+            var pool = new TinyHttpClientPool();
             pool.ClientInitializationOnFetch = (obj) => i++;
 
             // Act
